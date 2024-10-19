@@ -1,10 +1,15 @@
 "use client";
-import React, { createContext, PropsWithChildren, useState } from "react";
+import React, {
+  createContext,
+  PropsWithChildren,
+  useEffect,
+  useState,
+} from "react";
 import { EmailFilterType, EmailType } from "../types/custTypes";
 
 type EmailContextType = {
   emails: EmailType[];
-  setInitialEmails:(emails:EmailType[])=>void;
+  setEmailsList: (emails: EmailType[]) => void;
   selectedFilter: EmailFilterType | null;
   filterEmailsBy: (state: EmailFilterType) => void;
   markAsFavorite: (emailId: string, markAsFavorite: boolean) => void;
@@ -12,7 +17,7 @@ type EmailContextType = {
 };
 let defaultValue: EmailContextType = {
   emails: [],
-  setInitialEmails:(emails:EmailType[])=>{},
+  setEmailsList: (emails: EmailType[]) => {},
   selectedFilter: null,
   filterEmailsBy: (state: EmailFilterType) => {},
   markAsFavorite: (emailId: string, markAsFavorite: boolean) => {},
@@ -26,8 +31,8 @@ const EmailContextProvider: React.FC<PropsWithChildren> = (props) => {
     null
   );
 
-  function setInitialEmails(emails:EmailType[]){
-    setEmails(emails)
+  function setEmailsList(emails: EmailType[]) {
+    setEmails((prevEmail) => prevEmail.concat(emails));
   }
 
   function markAsFavorite(emailId: string, markAsFavorite: boolean) {
@@ -51,11 +56,28 @@ const EmailContextProvider: React.FC<PropsWithChildren> = (props) => {
   function filterEmailsBy(state: EmailFilterType) {
     setSelectedFilter(state);
   }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let emails = localStorage.getItem("emails")!;
+      if (emails) {
+        let parsedEmails = JSON.parse(emails);
+        setEmails(parsedEmails);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("emails", JSON.stringify(emails));
+    }
+  }, [emails]);
+
   return (
     <EmailContext.Provider
       value={{
         emails,
-        setInitialEmails,
+        setEmailsList,
         selectedFilter,
         filterEmailsBy,
         markAsFavorite,

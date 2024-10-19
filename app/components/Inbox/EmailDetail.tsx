@@ -2,27 +2,30 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Avatar from "../commons/Avatar";
 import { EmailType } from "@/app/types/custTypes";
-import { getEmailDetails, updateEmailDetails } from "@/app/lib/apis";
+import { getEmailDetails } from "@/app/lib/apis";
 import { EmailContext } from "@/app/context/EmailContext";
+import moment from "moment";
 const EmailDetail: React.FC<{ selectedMailId: string }> = ({
   selectedMailId,
 }) => {
   const [detail, setDetail] = useState<null | EmailType>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { emails,markAsRead } = useContext(EmailContext);
+  const { emails, markAsRead } = useContext(EmailContext);
 
   async function fetchEmailDetails(id: string) {
     try {
       setIsLoading(true);
       setTimeout(async () => {
+        const existingEmailDetail = emails.find((email) => {
+          return email.id === selectedMailId;
+        })!;
         const {
-          data,
+          data: { body },
         } = await getEmailDetails(selectedMailId);
-        if (data) {
+        if (body && typeof body === "string") {
           //MARK EMAIL AS READ
-          await updateEmailDetails(id, { isRead: true });
           markAsRead(selectedMailId, true);
-          setDetail(data.body);
+          setDetail({ ...existingEmailDetail, body });
           setIsLoading(false);
         }
       }, 1000);
@@ -38,13 +41,13 @@ const EmailDetail: React.FC<{ selectedMailId: string }> = ({
     };
   }, [selectedMailId]);
 
-  // useEffect(()=>{
-  //   if(detail){
-  //       let updatedEmail = emails.find(email=> email.id === selectedMailId)
-        
-  //       if(updatedEmail) setDetail(updatedEmail)
-  //   }
-  // },[emails])
+  useEffect(()=>{
+    if(detail){
+        let updatedEmail = emails.find(email=> email.id === selectedMailId)!
+        let body = detail.body
+        setDetail({...updatedEmail,body})
+    }
+  },[emails])
 
   return (
     <div className="h-full w-full bg-white grid grid-cols-12 p-3">
@@ -59,7 +62,7 @@ const EmailDetail: React.FC<{ selectedMailId: string }> = ({
             <div className="flex flex-row justify-between items-center">
               <p className="flex flex-col">
                 <span className="text-2xl font-bold">{detail.subject}</span>
-                <span>{detail.date}</span>
+                <span>{moment(detail?.date).format('DD/MM/yyyy hh:mm a')}</span>
               </p>
               {!detail.isFavorite && (
                 <p>
@@ -69,7 +72,10 @@ const EmailDetail: React.FC<{ selectedMailId: string }> = ({
                 </p>
               )}
             </div>
-            <div className="py-2">{detail?.body}</div>
+            <div
+              className="py-2"
+              dangerouslySetInnerHTML={{ __html: detail?.body! }}
+            ></div>
           </div>
         </>
       ) : (

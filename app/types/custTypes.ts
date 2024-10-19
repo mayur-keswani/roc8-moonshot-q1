@@ -7,7 +7,7 @@ export type EmailType = {
   "date": number,
   "subject": string,
   "short_description": string,
-  body?:string,
+  body?:TrustedHTML,
   isRead?:boolean,
   isFavorite?:boolean
 };

@@ -2,7 +2,7 @@ import { EmailType } from "@/app/types/custTypes";
 import React, { ReactEventHandler, useContext } from "react";
 import Avatar from "../commons/Avatar";
 import { EmailContext } from "@/app/context/EmailContext";
-import { updateEmailDetails } from "@/app/lib/apis";
+import moment from "moment";
 
 const Email: React.FC<{ data: EmailType , onSelect: Function }> = ({
   data,
@@ -12,7 +12,6 @@ const Email: React.FC<{ data: EmailType , onSelect: Function }> = ({
   async function markAsFavoriteHandler(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     try {
-      await updateEmailDetails(data.id, { isFavorite: true });
       markAsFavorite(data.id, true);
       alert("Email is marked as favorite!");
     } catch (error) {
@@ -41,7 +40,7 @@ const Email: React.FC<{ data: EmailType , onSelect: Function }> = ({
             </p>
             <p>{data.short_description}</p>
             <p className="flex justify-between items-center w-1/4">
-              <span>{data?.date}</span>
+              <span>{moment(data?.date).format('DD/MM/yyyy hh:mm a')}</span>
               {!data?.isFavorite && (
                 <span>
                   <button
