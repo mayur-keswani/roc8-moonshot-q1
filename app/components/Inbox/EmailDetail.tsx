@@ -10,7 +10,7 @@ const EmailDetail: React.FC<{ selectedMailId: string }> = ({
 }) => {
   const [detail, setDetail] = useState<null | EmailType>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { emails, markAsRead } = useContext(EmailContext);
+  const { emails, markAsRead, markAsFavorite } = useContext(EmailContext);
 
   async function fetchEmailDetails(id: string) {
     try {
@@ -31,6 +31,16 @@ const EmailDetail: React.FC<{ selectedMailId: string }> = ({
       }, 1000);
     } catch (error) {
       alert("Something went wrong!");
+    }
+  }
+
+  async function markAsFavoriteHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    try {
+      markAsFavorite(selectedMailId, true);
+      alert("Email is marked as favorite!");
+    } catch (error) {
+      alert("Failed to mark email as favorite!");
     }
   }
 
@@ -66,7 +76,10 @@ const EmailDetail: React.FC<{ selectedMailId: string }> = ({
               </p>
               {!detail.isFavorite && (
                 <p>
-                  <button className="rounded-xl px-2 py-1 text-white text-sm bg-[var(--primary)]">
+                  <button 
+                    onClick={markAsFavoriteHandler}
+                    className="rounded-xl px-2 py-1 text-white text-sm bg-[var(--primary)]">
+
                     Mark as Favorite
                   </button>
                 </p>
