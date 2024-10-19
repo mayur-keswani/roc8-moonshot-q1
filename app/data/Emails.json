@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "sender": {
+      "email": "foo.bar@gmail.com",
+      "fullname": "Foo Bar"
+    },
+    "subject": "Lorem Ipsum",
+    "description": "Aenean ut odio eu",
+    "body": "",
+    "date": "2024/02/02 12:12:00",
+    "isRead": true,
+    "isFavorite": false,
+    "updatedData": {
+      "isRead": true
+    }
+  },
+  {
+    "id": "2",
+    "sender": {
+      "email": "foo.bar@gmail.com",
+      "fullname": "Foo Bar"
+    },
+    "subject": "Lorem Ipsum",
+    "description": "Vestibulum sit amet ipsum aliquet, lacinia",
+    "body": "",
+    "date": "2024/02/02 12:12:00",
+    "isRead": false,
+    "isFavorite": false,
+    "updatedData": {
+      "isRead": true
+    }
+  }
+]
