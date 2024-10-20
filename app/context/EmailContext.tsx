@@ -36,8 +36,9 @@ const EmailContextProvider: React.FC<PropsWithChildren> = (props) => {
   function setInitalEmailsList(emails: EmailType[]) {
     setEmails(emails);
   }
-  function setEmailsList(emails: EmailType[]) {
-    setEmails((prevEmail) => prevEmail.concat(emails));
+  function setEmailsList(newEmails: EmailType[]) {
+    console.log({prevEmail:emails})
+    setEmails((prevEmail) => prevEmail.concat(newEmails));
   }
 
   function markAsFavorite(emailId: string, markAsFavorite: boolean) {

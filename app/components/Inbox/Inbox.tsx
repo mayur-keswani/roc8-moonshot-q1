@@ -8,7 +8,7 @@ import { EmailContext } from "@/app/context/EmailContext";
 import { getEmails } from "@/app/lib/apis";
 
 const DEFAULT_PAGE = 1;
-const DEFAULT_PAGE_SIZE = 15;
+const DEFAULT_PAGE_SIZE = 10;
 
 const Inbox: React.FC = () => {
   const [selectedMail, setSelectedMail] = useState<string | null>(null);
@@ -29,7 +29,7 @@ const Inbox: React.FC = () => {
           isRead: false,
           isFavorite: false,
         }));
-
+       
         if (isInitial) setInitalEmailsList(updatedEmailList);
         else setEmailsList(updatedEmailList);
 
