@@ -39,6 +39,16 @@ const Filters: React.FC = () => {
         >
           Favorite
         </button>
+
+        <button
+          className={`float-right px-3 py-1 rounded-xl bg-red-600"
+          } hover:border-2`}
+          onClick={() => {
+            filterEmailsBy(EmailFilterType.ALL);
+          }}
+        >
+          Reset
+        </button>
       </div>
     </div>
   );

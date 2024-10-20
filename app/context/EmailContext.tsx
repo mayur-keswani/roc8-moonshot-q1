@@ -9,6 +9,7 @@ import { EmailFilterType, EmailType } from "../types/custTypes";
 
 type EmailContextType = {
   emails: EmailType[];
+  setInitalEmailsList: (emails: EmailType[]) => void;
   setEmailsList: (emails: EmailType[]) => void;
   selectedFilter: EmailFilterType | null;
   filterEmailsBy: (state: EmailFilterType) => void;
@@ -17,6 +18,7 @@ type EmailContextType = {
 };
 let defaultValue: EmailContextType = {
   emails: [],
+  setInitalEmailsList: (emails: EmailType[]) => {},
   setEmailsList: (emails: EmailType[]) => {},
   selectedFilter: null,
   filterEmailsBy: (state: EmailFilterType) => {},
@@ -30,7 +32,10 @@ const EmailContextProvider: React.FC<PropsWithChildren> = (props) => {
   const [selectedFilter, setSelectedFilter] = useState<EmailFilterType | null>(
     null
   );
-
+  
+  function setInitalEmailsList(emails: EmailType[]) {
+    setEmails(emails);
+  }
   function setEmailsList(emails: EmailType[]) {
     setEmails((prevEmail) => prevEmail.concat(emails));
   }
@@ -45,8 +50,9 @@ const EmailContextProvider: React.FC<PropsWithChildren> = (props) => {
   }
 
   function markAsRead(emailId: string, markAsRead: boolean) {
+    console.log({emailId})
     let updatedEmail = emails.map((email) => {
-      if (email.id?.toString() === emailId) {
+      if (email.id?.toString() === emailId?.toString()) {
         return { ...email, isRead: markAsRead };
       } else return email;
     });
@@ -78,6 +84,7 @@ const EmailContextProvider: React.FC<PropsWithChildren> = (props) => {
       value={{
         emails,
         setEmailsList,
+        setInitalEmailsList,
         selectedFilter,
         filterEmailsBy,
         markAsFavorite,

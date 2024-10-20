@@ -13,6 +13,7 @@ export type EmailType = {
 };
 
 export enum EmailFilterType {
+  "ALL" = "all",
   "UNREAD" = "unread",
   "READ" = "read",
   "FAVORITE" = "favorite",

@@ -13,10 +13,11 @@ const DEFAULT_PAGE_SIZE = 15;
 const Inbox: React.FC = () => {
   const [selectedMail, setSelectedMail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { emails, setEmailsList, selectedFilter } = useContext(EmailContext);
+  const { emails, setEmailsList, selectedFilter, setInitalEmailsList } =
+    useContext(EmailContext);
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
 
-  async function fetchEmails(page: number) {
+  async function fetchEmails(page: number, isInitial = true) {
     try {
       setIsLoading(true);
       setTimeout(async () => {
@@ -28,7 +29,10 @@ const Inbox: React.FC = () => {
           isRead: false,
           isFavorite: false,
         }));
-        setEmailsList(updatedEmailList);
+
+        if (isInitial) setInitalEmailsList(updatedEmailList);
+        else setEmailsList(updatedEmailList);
+
         setIsLoading(false);
       }, 1000);
     } catch (error) {
@@ -38,12 +42,13 @@ const Inbox: React.FC = () => {
 
   useEffect(() => {
     if (currentPage * DEFAULT_PAGE_SIZE > emails.length)
-      fetchEmails(currentPage);
+      fetchEmails(currentPage, emails?.length > 0 ? false : true);
   }, [currentPage]);
 
   let filterEmails = useMemo(() => {
+    console.log({ selectedFilter });
     let filteredEmails = emails.filter((email) => {
-      if (selectedFilter) {
+      if (selectedFilter && selectedFilter !== EmailFilterType.ALL) {
         if (selectedFilter === EmailFilterType.READ) {
           return email.isRead;
         }
@@ -57,11 +62,12 @@ const Inbox: React.FC = () => {
         return true;
       }
     });
+    console.log({ filteredEmails });
     return filteredEmails.slice(
       currentPage * DEFAULT_PAGE_SIZE - DEFAULT_PAGE_SIZE,
       currentPage * DEFAULT_PAGE_SIZE
     );
-  }, [emails, selectedFilter,currentPage]);
+  }, [emails, selectedFilter, currentPage]);
 
   return (
     <div className={`h-[calc(100%-100px)] `}>
@@ -75,9 +81,9 @@ const Inbox: React.FC = () => {
             className={`grid ${selectedMail ? "grid-cols-3" : "grid-cols-1"}`}
           >
             <ul className="flex w-full flex-col items-start justify-start gap-2 overflow-y-scroll">
-              {filterEmails.map((email) => (
+              {filterEmails.map((email, index) => (
                 <Email
-                  key={email.id}
+                  key={email.id + "" + index}
                   data={email}
                   onSelect={() => {
                     setSelectedMail(email.id);
